@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+}
+
+#map {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    bottom: 40px;
+    height: 100%;
+    width: 100%;
+}
+
+/* Slider control styling */
+.sliderctl {
+    background: #fff;
+    border: 2px solid #18453B;
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .20);
+}
+
+.sliderctl .label {
+    font-weight: 700;
+    color: #18453B;
+    margin-bottom: 6px;
+}
+
+.sliderctl .date {
+    font-weight: 700;
+    color: #18453B;
+    margin-left: 8px;
+}
+
+.sliderctl .ui-slider {
+    width: 260px;
+    margin-top: 6px;
+}
+

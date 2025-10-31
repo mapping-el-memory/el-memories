@@ -12,39 +12,9 @@
 
     <!-- Our custom CSS -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- Leaflet CSS-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-    <!--Leaflet JS-->
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <!--jquery js-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- leaflet files -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-
-
-    <!--jQuery UI files-->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
-        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
-    <!--jQuery UI Touch js, required for touchscreen use-->
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-
-    <!--Leaflet Time-Slider plugin js;
-find maintained version at https://github.com/geyerbri/LeafletSlider-->
-    <script src="js/SliderControl.js"></script>
-
-</head>
-
+    </head>
 <body>
-    <!-- Navigation -->
+ <!-- Navigation -->
     <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand nav-link" href="index.html">Mapping East Lansing Memories</a>
@@ -60,11 +30,10 @@ find maintained version at https://github.com/geyerbri/LeafletSlider-->
         </div>
     </nav>
 
-    <div id="map">
-        If you can read this, either an error has occurred, or you're getting cute with the developer tools of your
-        browser.
+    <div class="container mt-5">
+        <h1>About Mapping East Lansing Memories</h1>
+        <p>This project aims to map the memories of East Lansing through an interactive web application.</p>
     </div>
-
 
     <footer class="bg-dark text-white text-center py-3 fixed-bottom">
         <p>&copy; 2025 Ritesh, Gungun & Xinyue-Kiera | CHI 2025 Mapping Challenge</p>
@@ -78,5 +47,3 @@ find maintained version at https://github.com/geyerbri/LeafletSlider-->
     <!-- Our custom JS -->
     <script src="script.js"></script>
 </body>
-
-</html>
