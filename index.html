@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <title>Mapping East Lansing Memories</title>
 
     <!-- Bootstrap CSS -->
@@ -24,9 +27,6 @@
 
     <!--jquery js-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- leaflet files -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 
 
     <!--jQuery UI files-->
@@ -41,9 +41,67 @@
 find maintained version at https://github.com/geyerbri/LeafletSlider-->
     <script src="js/SliderControl.js"></script>
 
+<!-- Initiates Modal and Uses cookies for Dont Show Again Checkbox -->     
+<script type="text/javascript">
+ $(document).ready(function () {
+    $('#myModal').modal();
+  
+   //check cookies
+    function setCookie(){
+        var dis = document.cookie;
+        while(dis.charAt(0)==" ") dis = dis.substring(1);
+        if(dis.substring(8,13)== "false"){
+            $('#myModal').modal('hide');
+        }
+        console.log(dis.substring(8,13));
+    }
+    setCookie();    
+     
+     
+      var $check = $("input.dont").click(function(){
+        if($("input.dont").is(":checked")){
+        document.cookie = "display=false";        
+        }else{
+        document.cookie = "display=true";        
+        }
+          
+      });
+ });
+</script>
 </head>
 
 <body>
+
+<!-- MODAL -->
+      
+      <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-dialog modal-vertical-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Welcome to Mapping East Lansing Memories!</h4>
+                    </div>
+                    <div class="modal-body">
+                    	
+                        <p>Mapping East Lansing Memories is an interpersonal archive, functioning as a case study of the affective impact of space and place on initializing one's associative lived experience. 
+                        </p>
+                        <p>Hover over the markers on the map (see images below) to make the options appear. To learn about the different places per team member, toggle through each of the markers. These markers represent different locaations across East Lansing, chronologically arranged as our team members visited them.</p>
+			<div class="row centered">
+			<img align="center" src="" alt="layers arrow" title="Markers on the Map" alt="Markers" eight="8%" width="8%" hspace="20"> 
+			</div>                    	
+                    <div class="row centered">
+			<img align="left" src="" title="Ritesh" lt="pin 1" height="8%" width="8%" hspace="20"> <img align="center" src="photos/pin2.jpg" title="Gungun" alt="pin 2" height="8%" width="8%"> <img align="right" src="" title="Kiera-Xinyue" alt="pin 2" height="8%" width="8%"> 
+			</div>
+			</div>
+                    <div class="modal-footer">
+                        <label ><input class="dont" type="checkbox" name="dismiss"> Don't show again</label><br />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Explore</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
     <!-- Navigation -->
     <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
