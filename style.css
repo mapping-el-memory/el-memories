@@ -61,6 +61,14 @@ footer {
     box-shadow: 0 10px 24px rgba(0, 0, 0, .20);
 }
 
+/* Move the slider control a bit higher on the map so it's not flush with the bottom.
+   We target the Leaflet control wrapper that also has the 'sliderctl' class. */
+.leaflet-control.sliderctl {
+    /* raise the control 110px from bottom; use !important to override Leaflet defaults */
+    bottom: 110px !important;
+    left: 12px; /* small left inset for visual spacing */
+}
+
 .sliderctl .label {
     font-weight: 700;
     color: #18453B;
@@ -74,8 +82,14 @@ footer {
 }
 
 .sliderctl .ui-slider {
-    width: 260px;
+        width: 340px; /* increased width so the slider is more visible */
     margin-top: 6px;
+}
+
+/* Responsive: make slider narrower on small screens */
+@media (max-width: 520px) {
+    .sliderctl .ui-slider { width: 220px; }
+    .leaflet-control.sliderctl { bottom: 90px !important; }
 }
 
 .leaflet-bottom.leaflet-left {
