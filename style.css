@@ -1,8 +1,26 @@
-body {
+/* Site layout: ensure footer stays at the bottom of the page
+   - body uses column flex so main content can grow and push footer down
+   - keeps behavior friendly for pages that include a <main> element (about.html)
+*/
+html, body {
+    height: 100%;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* main should grow to fill available space so footer is pushed to the bottom */
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
 }
 
 #map {
+    /* If the map page uses #map inside body, let it fill available space.
+       We keep legacy absolute positioning as a fallback if other code relies on it. */
     position: absolute;
     top: 40px;
     left: 0;
