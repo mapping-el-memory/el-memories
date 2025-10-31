@@ -11,6 +11,29 @@ body {
     width: 100%;
 }
 
+.bg-about {
+    position: relative;
+    background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1716477469/clients/lansing/MSU_brady_mcdonough_Instagram_2736_ig_18068692432395619_7a17ba53-79a8-4030-adcd-7922c61d4922.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+.bg-about::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* grey with 40% opacity */
+  z-index: 0;
+}
+
+.bg-about > * {
+  position: relative;
+  z-index: 1;
+}
+
+
 /* Slider control styling */
 .sliderctl {
     background: #fff;
@@ -37,3 +60,8 @@ body {
     margin-top: 6px;
 }
 
+.leaflet-bottom.leaflet-left {
+    margin-bottom: 56px;
+}
+
+/* lifts controls above footer */
