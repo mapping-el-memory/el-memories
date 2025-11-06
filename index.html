@@ -1,140 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>East Lansing – Chronological Slider (Spartan Popups)</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Mapping East Lansing Memories</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
-    <!-- Our custom CSS -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Leaflet CSS-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-    <!--Leaflet JS-->
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <!--jquery js-->
+    <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
+    <!-- Leaflet 1.7.1 (to match your environment) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 
-    <!--jQuery UI files-->
+    <!-- jQuery UI slider + touch -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
-        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
-    <!--jQuery UI Touch js, required for touchscreen use-->
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
 
-    <!--Leaflet Time-Slider plugin js;
-find maintained version at https://github.com/geyerbri/LeafletSlider-->
-    <script src="js/SliderControl.js"></script>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      #myMap { width: 100%; height: 100%; }
 
-<!-- Initiates Modal and Uses cookies for Dont Show Again Checkbox -->     
-<script type="text/javascript">
- $(document).ready(function () {
-    $('#myModal').modal();
-  
-   //check cookies
-    function setCookie(){
-        var dis = document.cookie;
-        while(dis.charAt(0)==" ") dis = dis.substring(1);
-        if(dis.substring(8,13)== "false"){
-            $('#myModal').modal('hide');
+      /* Popup theming */
+      .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 14px 32px rgba(0,0,0,.24); border:2px solid #18453B; }
+      .popup-card{min-width:280px; max-width:360px}
+      .popup-header{display:flex; align-items:center; gap:12px; padding:10px 10px 8px; border-bottom:1px solid #eee}
+      .popup-header h3{margin:0; font-size:16px}
+      .popup-header p{margin:2px 0 0 0; color:#444; font-size:13px}
+      .popup-logo{width:48px; height:48px; object-fit:contain}
+      .popup-media img{display:block; width:100%; height:160px; object-fit:cover; border-radius:0 0 12px 12px}
+
+      /* Slider control (plugin-free shim UI) */
+      .sliderctl { background:#fff; border:2px solid #18453B; border-radius:12px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.20); }
+      .sliderctl .label { font-weight:700; color:#18453B; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+      .sliderctl .date { font-weight:700; color:#18453B; }
+      .sliderctl .ui-slider { width: 260px; margin-top:6px; }
+
+      /* Spartan marker icons via DivIcon */
+      .spartan-marker { width:36px; height:36px; display:inline-block; }
+      .spartan-img    { width:36px; height:36px; object-fit:contain; filter: none; }
+      .spartan-blue   { filter: hue-rotate(180deg) saturate(2) brightness(1.1); } /* blue recolor */
+      .spartan-pink   { filter: hue-rotate(-60deg) saturate(2) brightness(1.2); } /* pink recolor */
+      .spartan-green  { filter: hue-rotate(100deg) saturate(1.6) brightness(0.9); } /* MSU green recolor */
+    </style>
+  </head>
+  <body>
+    <div id="myMap"></div>
+
+    <script>
+      // -------------------------------------------------------------------
+      // Map
+      // -------------------------------------------------------------------
+      var map1 = L.map('myMap').setView([42.7348, -84.4820], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map1);
+
+      // Your Spartan logo file (transparent PNG) — place it in /assets
+      const LOGO_SRC = 'assets/msu_spartan_logo.png';
+
+      // Build a DivIcon using the same logo but recolored via CSS filters
+      function spartanDivIcon(owner){
+        let cls = 'spartan-green';
+        if (/Gungun/i.test(owner)) cls = 'spartan-blue';
+        else if (/Kiera/i.test(owner)) cls = 'spartan-pink';
+        // Ritesh -> green (default)
+        return L.divIcon({
+          className: 'spartan-marker',
+          html: '<img class="spartan-img '+cls+'" src="'+LOGO_SRC+'" alt="Spartan logo"/>',
+          iconSize: [36,36],
+          iconAnchor: [18,18],
+          popupAnchor: [0,-18]
+        });
+      }
+
+      // Helper: create feature
+      function featurePt(title, lon, lat, time, desc, img){
+        return {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [ lon, lat ] }, // GeoJSON order [lon,lat]
+          properties: { title: title, description: desc || '', time: time, img: img || '' }
+        };
+      }
+
+      // -------------------------------------------------------------------
+      // DATA  (added img placeholders; replace with openly-licensed image URLs)
+      // Use YYYY/MM so slider sorts chronologically; label shows only the YEAR
+      // -------------------------------------------------------------------
+      var dataset1 = [
+        // 2023
+        featurePt('Gungun — Baker Hall', -84.47389, 42.72917, '2023/09',
+          'Baker Hall (source: topoquest.com)', 'https://picsum.photos/seed/baker/800/400'),
+        featurePt('Ritesh — Wells Hall', -84.48194, 42.72778, '2023/09',
+          'Wells Hall (source: LatLong)', 'https://picsum.photos/seed/wells/800/400'),
+        featurePt('Gungun — Potbelly (233 E Grand River Ave)', -84.48174, 42.73489, '2023/09',
+          'Potbelly (source: MapQuest)', 'https://picsum.photos/seed/potbelly/800/400'),
+        featurePt('Ritesh — Olga’s Kitchen (Frandor, 354 Frandor Ave)', -84.52883, 42.73587, '2023/09',
+          'Olga’s Kitchen – Frandor', 'https://picsum.photos/seed/olgas/800/400'),
+        featurePt('Gungun — Meijer (1350 W Lake Lansing Rd)', -84.50445, 42.768278, '2023/09',
+          'Meijer – Lake Lansing (maps.msu.edu)', 'https://picsum.photos/seed/meijer/800/400'),
+        featurePt('Ritesh — Staples (3003 E Michigan Ave)', -84.52633, 42.73479, '2023/09',
+          'Staples (stores.staples.com)', 'https://picsum.photos/seed/staples/800/400'),
+        featurePt('Gungun — Sansu (4750 S Hagadorn Rd)', -84.482842, 42.702165, '2023/09',
+          'Sansu (Yelp)', 'https://picsum.photos/seed/sansu/800/400'),
+        featurePt('Ritesh — Summit Comics & Games (216 S Washington Sq)', -84.551557, 42.734973, '2023/09',
+          'Summit Comics & Games (downtownlansing.org)', 'https://picsum.photos/seed/summit/800/400'),
+        featurePt('Gungun — Jolly Pumpkin (218 Albert Ave)', -84.48253, 42.73586, '2023/09',
+          'Jolly Pumpkin (MapQuest)', 'https://picsum.photos/seed/jolly/800/400'),
+        featurePt('Ritesh — MSU Tech Store (Computer Center, 450 Auditorium Rd)', -84.47899, 42.72529, '2023/09',
+          'MSU Tech Store (maps.msu.edu)', 'https://picsum.photos/seed/techstore/800/400'),
+
+        // 2024
+        featurePt('Kiera — IM West', -84.487943, 42.728184, '2024/09',
+          'IM West (spartancash.msu.edu)', 'https://picsum.photos/seed/imwest/800/400'),
+        featurePt('Kiera — MSU Dairy Store (Anthony Hall, 474 S Shaw Ln)', -84.479515, 42.725117, '2024/09',
+          'MSU Dairy Store (whereorg.com)', 'https://picsum.photos/seed/dairystore/800/400'),
+        featurePt('Kiera — Main Library (366 W Circle Dr)', -84.483208, 42.730869, '2024/09',
+          'Main Library (LatLong)', 'https://picsum.photos/seed/library/800/400'),
+        featurePt('Kiera — Brody Square', -84.49543, 42.73149, '2024/09',
+          'Brody Square (Mapcarta)', 'https://picsum.photos/seed/brody/800/400'),
+        featurePt('Kiera — Erickson Hall', -84.47928, 42.72708, '2024/09',
+          'Erickson Hall (Mapcarta)', 'https://picsum.photos/seed/erickson/800/400')
+      ];
+
+      // -------------------------------------------------------------------
+      // Styled popup (opens only when marker is clicked)
+      // -------------------------------------------------------------------
+      function onEachFeature(feature, layer){
+        var title = feature.properties.title || '';
+        var desc  = feature.properties.description || '';
+        var img   = feature.properties.img || '';
+
+        // Decide logo recolor class by owner (prefix before em dash)
+        var owner = (title.split('—')[0] || '').trim(); // e.g., "Gungun"
+        var cls = 'spartan-green';
+        if (/Gungun/i.test(owner)) cls = 'spartan-blue';
+        else if (/Kiera/i.test(owner)) cls = 'spartan-pink';
+
+        // Show only the place name (after the em dash)
+        var place = title.replace(/^[^—]+—\s*/, '').trim();
+
+        var html =
+          '<div class="popup-card">' +
+            '<div class="popup-header">' +
+              '<img class="popup-logo '+cls+'" src="'+LOGO_SRC+'" alt="Spartan logo"/>' +
+              '<div><h3>'+place+'</h3>' + (desc ? '<p>'+desc+'</p>' : '') + '</div>' +
+            '</div>' +
+            (img ? '<div class="popup-media"><img src="'+img+'" alt="'+place+' (photo)"></div>' : '') +
+          '</div>';
+
+        layer.bindPopup(html, { className: 'themed-popup', autoClose: true, closeButton: true });
+      }
+
+      // Render markers as Spartan logos (DivIcon) and attach popups
+      var group1 = L.geoJSON(dataset1, {
+        onEachFeature: onEachFeature,
+        pointToLayer: function(feature, latlng){
+          var owner = (feature.properties.title.split('—')[0] || '').trim();
+          return L.marker(latlng, { icon: spartanDivIcon(owner) });
         }
-        console.log(dis.substring(8,13));
-    }
-    setCookie();    
-     
-     
-      var $check = $("input.dont").click(function(){
-        if($("input.dont").is(":checked")){
-        document.cookie = "display=false";        
-        }else{
-        document.cookie = "display=true";        
-        }
-          
       });
- });
-</script>
-</head>
 
-<body>
+      // Build ordered entry list for slider
+      var entries = [];
+      group1.eachLayer(function(layer){
+        var t = layer.feature.properties.time;              // 'YYYY/MM'
+        var parts = t.split('/');
+        var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, 1);
+        entries.push({ layer: layer, time: d });
+      });
 
-<!-- MODAL -->
-      
-      <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-dialog modal-vertical-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Welcome to Mapping East Lansing Memories!</h4>
-                    </div>
-                    <div class="modal-body">
-                    	
-                        <p>Mapping East Lansing Memories is an interpersonal archive, functioning as a case study of the affective impact of space and place on initializing one's associative lived experience. 
-                        </p>
-                        <p>Hover over the markers on the map (see images below) to make the options appear. To learn about the different places per team member, toggle through each of the markers. These markers represent different locaations across East Lansing, chronologically arranged as our team members visited them.</p>
-			<div class="row centered">
-			<img align="center" src="" alt="layers arrow" title="Markers on the Map" alt="Markers" eight="8%" width="8%" hspace="20"> 
-			</div>                    	
-                    <div class="row centered">
-			<img align="left" src="" title="Ritesh" lt="pin 1" height="8%" width="8%" hspace="20"> <img align="center" src="photos/pin2.jpg" title="Gungun" alt="pin 2" height="8%" width="8%"> <img align="right" src="" title="Kiera-Xinyue" alt="pin 2" height="8%" width="8%"> 
-			</div>
-			</div>
-                    <div class="modal-footer">
-                        <label ><input class="dont" type="checkbox" name="dismiss"> Don't show again</label><br />
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Explore</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
-    <!-- Navigation -->
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand nav-link" href="index.html">Mapping East Lansing Memories</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+      // Fit once to all points
+      var tmp = L.featureGroup(entries.map(e => e.layer));
+      if (tmp.getBounds().isValid()) map1.fitBounds(tmp.getBounds().pad(0.15));
 
-    <div id="map">
-        If you can read this, either an error has occurred, or you're getting cute with the developer tools of your
-        browser.
-    </div>
+      // -------------------------------------------------------------------
+      // Plugin-free slider shim (keeps your original API usage)
+      // -------------------------------------------------------------------
+      (function(){
+        var SliderCtl = L.Control.extend({
+          options: { position: 'bottomleft', alwaysShowDate: true, showPopups: false }, // don't open popups automatically
+          onAdd: function(map){
+            this._map = map;
+            var div = L.DomUtil.create('div', 'sliderctl');
+            div.innerHTML = '<div class="label"><span class="date" id="slider-date"></span></div><div id="slider-ui"></div>';
+            L.DomEvent.disableClickPropagation(div);
+            return div;
+          },
+          startSlider: function(){
+            var that = this;
+            var $ui = $('#slider-ui');
+            var $date = $('#slider-date');
+            if (!entries.length) return;
+            $ui.slider({
+              min: 0, max: entries.length-1, value: 0, step: 1,
+              slide: function(_, ui){ that._update(ui.value); },
+              change: function(_, ui){ that._update(ui.value); }
+            });
+            // init
+            this._update(0);
+            if (this.options.alwaysShowDate) $date.text(entries[0].time.getFullYear());
+          },
+          _update: function(i){
+            var e = entries[i];
+            if (!e) return;
+            if (this.current) { try { this._current.layer.remove(); } catch(){} }
+            e.layer.addTo(this._map);
+            // do NOT auto-open popup; user clicks marker
+            $('#slider-date').text(e.time.getFullYear());
+            this._current = e;
+            var ll = e.layer.getLatLng && e.layer.getLatLng();
+            if (ll) this._map.panTo(ll, { animate: true });
+          }
+        });
+        L.control.sliderControl = function(opts){ return new SliderCtl(opts); };
+      })();
 
+      // Use the slider API (compatible with the original plugin signature)
+      var sliderControl1 = L.control.sliderControl({ layer: group1, alwaysShowDate: true, showPopups: false });
+      map1.addControl(sliderControl1);
+      sliderControl1.startSlider();
 
-    <footer class="bg-dark text-white text-center py-3 fixed-bottom">
-        <p>&copy; 2025 Ritesh, Gungun & Xinyue-Kiera | CHI 2025 Mapping Challenge</p>
-    </footer>
-
-    <!-- Bootstrap JS + Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-
-    <!-- Our custom JS -->
-    <script src="script.js"></script>
-</body>
-
+      // Add markers to the map (they remain clickable for popups)
+      group1.addTo(map1);
+    </script>
+  </body>
 </html>
