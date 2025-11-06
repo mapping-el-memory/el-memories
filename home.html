@@ -59,7 +59,7 @@
       ];
 
       function onEachFeature(feature, layer){
-        var content = <div><h4>${feature.properties.title}</h4><p>${feature.properties.description}</p></div>;
+        var content = `<div><h4>${feature.properties.title}</h4><p>${feature.properties.description}</p></div>`;
         layer.bindPopup(content);
       }
 
