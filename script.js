@@ -1,12 +1,60 @@
 // Mapping East Lansing Memories — main JS
-// Works with your HTML (#map) and CSS. No external slider plugin required.
+// Works with your HTML (#map / #myMap) and CSS. No external slider plugin required.
+// Defensive initialization: pick an available map container id (myMap, map, or any id containing "map").
 
-// 1) Map + tiles
-var map = L.map('map').setView([42.7347, -84.4856], 13);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+(function(){
+  function findMapContainer(){
+    if(typeof document === 'undefined') return null;
+    if(document.getElementById('myMap')) return 'myMap';
+    if(document.getElementById('map')) return 'map';
+    // fallback: first element with id containing 'map' (case-insensitive)
+    var els = document.querySelectorAll('[id]');
+    for(var i=0;i<els.length;i++){
+      var id = els[i].id || '';
+      if(/map/i.test(id)) return id;
+    }
+    return null;
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var containerId = findMapContainer();
+    if(!containerId){
+      console.error("No map container found. Looking for element id 'myMap' or 'map'. Map initialization aborted.");
+      return;
+    }
+
+    // create or reuse the map and expose it on window.map so other scripts can access it if needed
+    var map = null;
+    if (window.map) {
+      // another script already created a map and exposed it
+      map = window.map;
+      console.info('Using existing window.map');
+    } else if (window.map1) {
+      // page has a global `map1` (some templates use map1) — reuse it
+      window.map = window.map1;
+      map = window.map;
+      console.info('Reusing existing window.map1 as window.map');
+    } else {
+      try {
+        window.map = L.map(containerId).setView([42.7347, -84.4856], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(window.map);
+        map = window.map;
+        console.info('Initialized new Leaflet map on #' + containerId);
+      } catch (err) {
+        console.warn('Leaflet map init failed (maybe already initialized):', err);
+        if (window.map1) {
+          window.map = window.map1;
+          map = window.map;
+          console.info('Falling back to window.map1');
+        } else {
+          console.error('Map initialization aborted.');
+          return;
+        }
+      }
+    }
 
 // 2) Data — add `img` (openly licensed) and `link` (authoritative)
 function featurePt(title, lon, lat, time, desc, img, link) {
@@ -207,3 +255,5 @@ if (typeof jQuery === 'undefined') {
   console.error('jQuery UI is not loaded (required for the slider).');
 }
 console.log('Slider labels:', labels);
+  }); // end DOMContentLoaded
+})(); // end IIFE
