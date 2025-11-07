@@ -5,9 +5,13 @@
 html,
 body {
     height: 100%;
-    margin: 0;
     display: flex;
     flex-direction: column;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
 }
 
 /* Header image styling */
@@ -64,15 +68,22 @@ footer {
 }
 
 #map {
-    /* If the map page uses #map inside body, let it fill available space.
-       We keep legacy absolute positioning as a fallback if other code relies on it. */
-    position: absolute;
-    top: 40px;
-    left: 0;
-    bottom: 40px;
-    height: 100%;
-    width: 100%;
+  position: fixed;
+  top: var(--navH);
+  left: 0;
+  right: 0;
+  bottom: var(--footH);
+  width: 100%;
 }
+
+/* Keep Leaflet controls clickable, but don’t let other fixed UI block drag */
+.leaflet-container { touch-action: pan-x pan-y; }
+
+/* If you added the bottom-left legend, keep it small and above the map */
+.marker-legend { z-index: 1100; }
+
+/* Safety: make Bootstrap modal backdrops sit BELOW the navbar (and go away when closed) */
+.modal-backdrop { z-index: 1030; }
 
 /* Full-width hero section */
 .about-hero {
@@ -144,18 +155,19 @@ footer {
 
 /* Popup image sizing */
 .leaflet-popup-content img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 200px;         /* limits tall photos */
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    /* limits tall photos */
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .leaflet-popup-content {
-  padding: 10px 12px;
-  overflow: hidden;
+    padding: 10px 12px;
+    overflow: hidden;
 }
 
 
@@ -279,103 +291,125 @@ footer {
 
 /* --- green & white button styling --- */
 .explore-btn.btn-primary {
-  background-color: #18453B;     /* MSU deep green */
-  border-color: #18453B;
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 10px 22px;
-  letter-spacing: 0.3px;
-  transition: all 0.25s ease;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    background-color: #18453B;
+    /* MSU deep green */
+    border-color: #18453B;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 22px;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
 }
 
 .explore-btn.btn-primary:hover,
 .explore-btn.btn-primary:focus {
-  background-color: #ffffff;
-  color: #18453B;
-  border-color: #18453B;
-  box-shadow: 0 4px 10px rgba(24,69,59,0.4);
-  transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #18453B;
+    border-color: #18453B;
+    box-shadow: 0 4px 10px rgba(24, 69, 59, 0.4);
+    transform: translateY(-2px);
 }
 
 .explore-btn.btn-primary:active {
-  background-color: #145A32;   /* darker pressed green */
-  border-color: #145A32;
-  color: #fff;
-  transform: translateY(0);
+    background-color: #145A32;
+    /* darker pressed green */
+    border-color: #145A32;
+    color: #fff;
+    transform: translateY(0);
 }
 
 /* optional subtle pulse animation when modal first opens */
 @keyframes pulse-once {
-  0% { box-shadow: 0 0 0 0 rgba(24,69,59,0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(24,69,59,0); }
-  100% { box-shadow: 0 0 0 0 rgba(24,69,59,0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(24, 69, 59, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 8px rgba(24, 69, 59, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(24, 69, 59, 0);
+    }
 }
 
 #exploreMapBtn {
-  animation: pulse-once 1.5s ease-out 0.4s;
+    animation: pulse-once 1.5s ease-out 0.4s;
 }
+
 /* --- end button styling --- */
 
 /* Fixed legend card (bottom-left) */
 .marker-legend {
-  position: fixed;
-  right: 12px;
-  /* sit above footer and slider; tweak if you need more space */
-  bottom: 140px;
-  z-index: 1100; /* above map + controls */
-  background: #ffffff;
-  border: 2px solid #18453B; /* deep green */
-  border-radius: 12px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-  padding: 10px 12px;
-  width: 210px; /* comfy width; adjust as you like */
-  font-family: system-ui, Segoe UI, sans-serif;
+    position: fixed;
+    right: 12px;
+    /* sit above footer and slider; tweak if you need more space */
+    bottom: 140px;
+    z-index: 1100;
+    /* above map + controls */
+    background: #ffffff;
+    border: 2px solid #18453B;
+    /* deep green */
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+    padding: 10px 12px;
+    width: 210px;
+    /* comfy width; adjust as you like */
+    font-family: system-ui, Segoe UI, sans-serif;
 }
 
 .legend-title {
-  font-weight: 800;
-  color: #18453B;
-  font-size: 0.95rem;
-  letter-spacing: 0.2px;
-  margin-bottom: 6px;
+    font-weight: 800;
+    color: #18453B;
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+    margin-bottom: 6px;
 }
 
 .legend-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .legend-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-  border-top: 1px dashed rgba(24,69,59,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-top: 1px dashed rgba(24, 69, 59, 0.2);
 }
-.legend-item:first-child { border-top: 0; }
+
+.legend-item:first-child {
+    border-top: 0;
+}
 
 .legend-item img {
-  width: 28px;
-  height: 28px;
-  display: block;
-  /* subtle shadow so icons pop on any basemap */
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+    width: 28px;
+    height: 28px;
+    display: block;
+    /* subtle shadow so icons pop on any basemap */
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 
 .legend-item span {
-  color: #2c2c2c;
-  font-weight: 600;
+    color: #2c2c2c;
+    font-weight: 600;
 }
 
 /* If your footer is taller or on small screens, tighten spacing */
 @media (max-width: 576px) {
-  .marker-legend {
-    bottom: 160px; /* lift a bit more on phones */
-    width: 190px;
-    padding: 8px 10px;
-  }
-  .legend-item img { width: 24px; height: 24px; }
+    .marker-legend {
+        bottom: 160px;
+        /* lift a bit more on phones */
+        width: 190px;
+        padding: 8px 10px;
+    }
+
+    .legend-item img {
+        width: 24px;
+        height: 24px;
+    }
 }
