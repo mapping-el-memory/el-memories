@@ -88,50 +88,31 @@ function onEachFeature(feature, layer) {
   layer.bindPopup(html, { closeButton: true, autoClose: true });
 }
 
-// 4) Marker rendering
+// 4) Marker rendering (do NOT add to map yet — the slider controls visibility)
 var group1 = L.geoJSON(dataset1, {
   onEachFeature: onEachFeature,
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng);
   }
-}).addTo(map);
+});
 
-// 5) Slider logic — group markers by season+year and toggle visibility per bucket
-var buckets = {};       // e.g., { "Fall 2023": [L.Marker, ...], "Fall 2024":[...] }
-var labels = [];
+// 5) Slider logic — group markers by YEAR only and toggle visibility
+var yearBuckets = {};     // { "2023": [Marker, ...], "2024": [Marker, ...] }
+var years = [];
 
 group1.eachLayer(function (layer) {
   var t = layer.feature && layer.feature.properties && layer.feature.properties.time;
   if (!t) return;
-  var parts = String(t).split('/'); // ['YYYY','MM']
-  var y = parts[0];
-  var m = parseInt(parts[1], 10) || 1;
-
-  // Season rules
-  var season;
-  if (m >= 3 && m <= 5) season = "Spring";
-  else if (m >= 6 && m <= 8) season = "Summer";
-  else if (m >= 9 && m <= 11) season = "Fall";
-  else season = "Winter";
-
-  var label = season + " " + y;
-
-  if (!buckets[label]) { buckets[label] = []; labels.push(label); }
-  buckets[label].push(layer);
+  var y = String(t).split('/')[0]; // 'YYYY/MM' -> 'YYYY'
+  if (!yearBuckets[y]) { yearBuckets[y] = []; years.push(y); }
+  yearBuckets[y].push(layer);
 });
 
-// Sort labels chronologically by year then season order
-var seasonOrder = { "Winter": 0, "Spring": 1, "Summer": 2, "Fall": 3 };
-labels.sort(function(a, b){
-  var ay = parseInt(a.split(' ')[1], 10);
-  var by = parseInt(b.split(' ')[1], 10);
-  if (ay !== by) return ay - by;
-  var as = a.split(' ')[0], bs = b.split(' ')[0];
-  return (seasonOrder[as] - seasonOrder[bs]);
-});
+// sort years ascending (e.g., ["2023","2024"])
+years.sort();
 
-if (!labels.length) {
-  console.error("No time labels computed from dataset. Check your 'time' values (expect 'YYYY/MM').");
+if (!years.length) {
+  console.error("No years computed from dataset. Check your 'time' values (expect 'YYYY/MM').");
 }
 
 // 6) Slider control (jQuery UI) as a Leaflet control
@@ -139,116 +120,62 @@ var SliderCtl = L.Control.extend({
   options: { position: 'bottomleft' },
   onAdd: function (m) {
     this._map = m;
-    // Important: include Leaflet control classes
+    // include Leaflet control classes so it positions/stylizes like a control
     var div = L.DomUtil.create('div', 'leaflet-control leaflet-bar sliderctl');
-    // Raise above map/fixed footer if needed
     div.style.zIndex = 1000;
-
     div.innerHTML =
-      '<div class="label">Period: <span class="date" id="slider-date"></span></div>' +
+      '<div class="label">Year: <span class="date" id="slider-date"></span></div>' +
       '<div id="slider-ui"></div>';
-
     L.DomEvent.disableClickPropagation(div);
     return div;
   },
   startSlider: function () {
-    if (!labels.length) {
-      console.warn("Slider has no labels; not initializing.");
-      return;
-    }
-    var that = this;
+    if (!years.length) return;
 
-    // init jQuery UI slider
+    // Build a per-year FeatureGroup cache on the control instance
+    this._fgCache = {};                 // { "2023": L.featureGroup([...]), ... }
+    for (var i = 0; i < years.length; i++) {
+      var y = years[i];
+      this._fgCache[y] = L.featureGroup(yearBuckets[y] || []);
+    }
+
+    var that = this;
     var $ui = $('#slider-ui');
     if (!$ui.length || typeof $ui.slider !== 'function') {
-      console.error("jQuery UI slider not found. Make sure jQuery UI CSS/JS are included before script.js.");
+      console.error("jQuery UI slider not found. Make sure jQuery UI CSS/JS are loaded before script.js.");
       return;
     }
 
-    var cachedFeatureGroups = {};
-    var weightedPositions = [];
-    var positionMap = new Map();
-    
-    // Calculate weighted positions based on year distribution
-    var positions = 0;
-    labels.forEach(function(label, index) {
-      var year = parseInt(label.split(' ')[1]);
-      var weight = year === 2023 ? 2 : 1; // Give 2023 twice the weight
-      var markerCount = (buckets[label] || []).length;
-      
-      // Add more granular positions for periods with more markers
-      var positions = weight * Math.max(1, Math.ceil(markerCount / 2));
-      
-      for (var i = 0; i < positions; i++) {
-        weightedPositions.push(index);
-      }
-    });
-
-    // Pre-cache feature groups and create position mapping
-    labels.forEach(function(label, index) {
-      var markerList = buckets[label] || [];
-      cachedFeatureGroups[label] = L.featureGroup(markerList);
-    });
-
-    var RAF;
-    var lastUpdate = 0;
-    
     $ui.slider({
       min: 0,
-      max: weightedPositions.length - 1,
+      max: years.length - 1,
       value: 0,
       step: 1,
-      animate: false,
-      classes: {
-        "ui-slider": "ui-slider-fast"
-      },
-      slide: function (_, ui) {
-        var now = Date.now();
-        var labelIndex = weightedPositions[ui.value];
-        
-        // Always update the label text immediately
-        $('#slider-date').text(labels[labelIndex]);
-        
-        // Use RequestAnimationFrame for smooth updates
-        if (now - lastUpdate > 32) { // ~30fps cap
-          cancelAnimationFrame(RAF);
-          RAF = requestAnimationFrame(function() {
-            that._update(labelIndex);
-            lastUpdate = now;
-          });
-        }
-      }
+      slide: function (_, ui) { that._update(ui.value); },
+      change: function (_, ui) { that._update(ui.value); }
     });
 
     // initial render
     this._update(0);
   },
   _update: function (idx) {
-    var label = labels[idx];
-    if (!label) return;
+    var y = years[idx];
+    if (!y) return;
 
-    // Use the cached feature group
-    var newFeatureGroup = cachedFeatureGroups[label];
-    
-    // Skip if same period
-    if (this._currentLabel === label) return;
-    this._currentLabel = label;
-    
-    // Efficiently swap visible markers
-    if (this._currentFeatureGroup) {
-      map.removeLayer(this._currentFeatureGroup);
-    }
-    
-    newFeatureGroup.addTo(map);
-    this._currentFeatureGroup = newFeatureGroup;
+    // Update label
+    $('#slider-date').text(y);
 
-    // Fit bounds only when settling on a new period
-    if (newFeatureGroup.getBounds().isValid()) {
-      map.fitBounds(newFeatureGroup.getBounds().pad(0.15), {
-        animate: false,
-        duration: 0,
-        maxZoom: 15 // Prevent over-zooming
-      });
+    // Swap visible markers: remove previous FG, add the chosen year's FG
+    if (this._currentFG) this._map.removeLayer(this._currentFG);
+    var fg = this._fgCache[y];
+    if (fg) {
+      fg.addTo(this._map);
+      this._currentFG = fg;
+
+      // Fit bounds to year markers (if any)
+      if (fg.getBounds && fg.getBounds().isValid()) {
+        this._map.fitBounds(fg.getBounds().pad(0.15));
+      }
     }
   }
 });
@@ -256,14 +183,4 @@ var SliderCtl = L.Control.extend({
 var sliderControl1 = new SliderCtl();
 map.addControl(sliderControl1);
 sliderControl1.startSlider();
-
-// 7) Extra sanity checks in console
-if (L.version && /^1\.7\./.test(L.version)) {
-  console.warn('Leaflet 1.7.x detected. Remove 1.7.1 CSS/JS from <head> and keep only 1.9.4.');
-}
-if (typeof jQuery === 'undefined') {
-  console.error('jQuery is not loaded.');
-} else if (typeof jQuery.ui === 'undefined') {
-  console.error('jQuery UI is not loaded (required for the slider).');
-}
-console.log('Slider labels:', labels);
+// End of script.js
