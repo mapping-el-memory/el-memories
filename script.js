@@ -275,7 +275,30 @@ function onEachFeature(feature, layer) {
     </article>
   `;
 
-  layer.bindPopup(html, { className: 'custom-popup', closeButton: true, autoClose: true });
+// measure navbar/footer (if present)
+  const navH    = document.getElementById('main-navbar')?.offsetHeight || 0;
+  const footerH = document.querySelector('footer.fixed-bottom')?.offsetHeight || 0;
+
+  layer.bindPopup(html, {
+    className: 'custom-popup',
+    closeButton: true,
+    autoClose: true,
+    autoPan: true,
+    // key lines: add padding so Leaflet pans far enough to clear nav/footer
+    autoPanPaddingTopLeft:     L.point(8, navH + 16),
+    autoPanPaddingBottomRight: L.point(8, footerH + 16)
+  });
+
+  // also pan the map when the marker is clicked (helps before popup opens)
+  layer.on('click', function () {
+    const latlng = this.getLatLng();
+    const navH    = document.getElementById('main-navbar')?.offsetHeight || 0;
+    const footerH = document.querySelector('footer.fixed-bottom')?.offsetHeight || 0;
+    map.panInside(latlng, {
+      paddingTopLeft:     L.point(8, navH + 16),
+      paddingBottomRight: L.point(8, footerH + 16)
+    });
+  });
 }
 
 
@@ -413,3 +436,12 @@ var sliderControl1 = new SliderCtl();
 map.addControl(sliderControl1);
 sliderControl1.startSlider();
 // End of script.js
+
+map.on('popupopen', function (e) {
+  const navH    = document.getElementById('main-navbar')?.offsetHeight || 0;
+  const footerH = document.querySelector('footer.fixed-bottom')?.offsetHeight || 0;
+  map.panInside(e.popup.getLatLng(), {
+    paddingTopLeft:     L.point(10, navH + 20),
+    paddingBottomRight: L.point(10, footerH + 20)
+  });
+});
