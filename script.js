@@ -8,6 +8,40 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+// --- custom image markers that scale with zoom ---
+const OWNER_IMAGE = {
+  'Gungun': 'images/gungunMarker.png',
+  'Kiera' : 'images/kieraMarker.png',
+  'Ritesh': 'images/riteshMarker.png'
+};
+
+// pick a marker image by owner (from "Owner — Place")
+function ownerFromTitle(title){
+  return (title || '').split('—')[0].trim();
+}
+
+// size for the current zoom (tweak numbers to taste)
+function sizeForZoom(z){
+  // clamps between 22–56 px, grows roughly with zoom
+  const s = 10 + (z * 3);
+  return Math.max(22, Math.min(56, Math.round(s)));
+}
+
+// build a DivIcon that wraps your PNG (lets us add CSS drop-shadow easily)
+function buildImageIcon(owner, zoom){
+  const src  = OWNER_IMAGE[owner] || 'Assets/gungunMarker.png'; // fallback
+  const size = sizeForZoom(zoom);
+
+  return L.divIcon({
+    className: 'mem-img-marker',
+    html: `<img src="${src}" alt="${owner} marker" style="width:${size}px;height:${size}px;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))"/>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2], // center the image
+    popupAnchor: [0, -size/2]
+  });
+}
+
+
 // 2) Data — add `img` (openly licensed) and `link` (authoritative)
 function featurePt(title, lon, lat, time, desc, img, link) {
   return {
@@ -92,9 +126,25 @@ function onEachFeature(feature, layer) {
 var group1 = L.geoJSON(dataset1, {
   onEachFeature: onEachFeature,
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng);
+    const owner = ownerFromTitle(feature.properties && feature.properties.title);
+    return L.marker(latlng, {
+      icon: buildImageIcon(owner, map.getZoom()),
+      alt: (feature.properties?.title || 'Memory')
+    });
   }
 });
+
+function updateMarkerSizes(){
+  const z = map.getZoom();
+  group1.eachLayer(function(marker){
+    if (!map.hasLayer(marker)) return; // only update visible markers
+    const owner = ownerFromTitle(marker.feature?.properties?.title);
+    marker.setIcon(buildImageIcon(owner, z));
+  });
+}
+
+map.on('zoomend', updateMarkerSizes);
+
 
 // 5) Slider logic — group markers by YEAR only and toggle visibility
 var yearBuckets = {};     // { "2023": [Marker, ...], "2024": [Marker, ...] }
@@ -192,7 +242,11 @@ _update: function (idx) {
       this._map.fitBounds(b.pad(0.15));
     }
   }
+  // keep icons sized correctly after we (re)add layers
+  updateMarkerSizes();
 }
+
+
 
 });
 
