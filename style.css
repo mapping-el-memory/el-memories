@@ -71,22 +71,53 @@ footer {
     width: 100%;
 }
 
-.bg-about {
-    position: relative;
-    background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1716477469/clients/lansing/MSU_brady_mcdonough_Instagram_2736_ig_18068692432395619_7a17ba53-79a8-4030-adcd-7922c61d4922.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    overflow: hidden;
+/* Full-width hero section */
+.about-hero {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* adjust as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.bg-about::before {
+/* Background image (from .bg-about) */
+.bg-about {
+  background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1716477469/clients/lansing/MSU_brady_mcdonough_Instagram_2736_ig_18068692432395619_7a17ba53-79a8-4030-adcd-7922c61d4922.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Overlay for dark tint */
+.about-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* grey with 40% opacity */
-  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* semi-transparent overlay */
+  z-index: 1;
 }
+
+/* Image inside hero (centered, responsive) */
+.about-hero-img {
+  position: relative;
+  z-index: 2;
+  max-width: 80%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+/* Make it full height on larger screens */
+@media (min-width: 992px) {
+  .about-hero {
+    height: 80vh;
+  }
+}
+
 
 /* (Old .bg-about rules removed — hero uses an <img> for full visibility) */
 /* Slider control styling */
