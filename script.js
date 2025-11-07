@@ -1,60 +1,12 @@
 // Mapping East Lansing Memories — main JS
-// Works with your HTML (#map / #myMap) and CSS. No external slider plugin required.
-// Defensive initialization: pick an available map container id (myMap, map, or any id containing "map").
+// Works with your HTML (#map) and CSS. No external slider plugin required.
 
-(function(){
-  function findMapContainer(){
-    if(typeof document === 'undefined') return null;
-    if(document.getElementById('myMap')) return 'myMap';
-    if(document.getElementById('map')) return 'map';
-    // fallback: first element with id containing 'map' (case-insensitive)
-    var els = document.querySelectorAll('[id]');
-    for(var i=0;i<els.length;i++){
-      var id = els[i].id || '';
-      if(/map/i.test(id)) return id;
-    }
-    return null;
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    var containerId = findMapContainer();
-    if(!containerId){
-      console.error("No map container found. Looking for element id 'myMap' or 'map'. Map initialization aborted.");
-      return;
-    }
-
-    // create or reuse the map and expose it on window.map so other scripts can access it if needed
-    var map = null;
-    if (window.map) {
-      // another script already created a map and exposed it
-      map = window.map;
-      console.info('Using existing window.map');
-    } else if (window.map1) {
-      // page has a global `map1` (some templates use map1) — reuse it
-      window.map = window.map1;
-      map = window.map;
-      console.info('Reusing existing window.map1 as window.map');
-    } else {
-      try {
-        window.map = L.map(containerId).setView([42.7347, -84.4856], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(window.map);
-        map = window.map;
-        console.info('Initialized new Leaflet map on #' + containerId);
-      } catch (err) {
-        console.warn('Leaflet map init failed (maybe already initialized):', err);
-        if (window.map1) {
-          window.map = window.map1;
-          map = window.map;
-          console.info('Falling back to window.map1');
-        } else {
-          console.error('Map initialization aborted.');
-          return;
-        }
-      }
-    }
+// 1) Map + tiles
+var map = L.map('map').setView([42.7347, -84.4856], 13);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
 
 // 2) Data — add `img` (openly licensed) and `link` (authoritative)
 function featurePt(title, lon, lat, time, desc, img, link) {
@@ -72,37 +24,43 @@ function featurePt(title, lon, lat, time, desc, img, link) {
 }
 
 var dataset1 = [
+  // Gungun — 2023
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.47389, 42.72917] },
     properties:{ title:'Gungun — Baker Hall', description:'Baker Hall (source: topoquest.com)', time:'2023/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.487943, 42.728184] },
-    properties:{ title:'Kiera — IM West', description:'IM West (spartancash.msu.edu)', time:'2024/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.48194, 42.72778] },
-    properties:{ title:'Ritesh — Wells Hall', description:'Wells Hall (source: LatLong)', time:'2023/09' } },
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.48174, 42.73489] },
     properties:{ title:'Gungun — Potbelly (233 E Grand River Ave)', description:'Potbelly (source: MapQuest)', time:'2023/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.479515, 42.725117] },
-    properties:{ title:'Kiera — MSU Dairy Store (Anthony Hall, 474 S Shaw Ln)', description:'MSU Dairy Store (whereorg.com)', time:'2024/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.52883, 42.73587] },
-    properties:{ title:'Ritesh — Olga’s Kitchen (Frandor, 354 Frandor Ave)', description:'Olga’s Kitchen – Frandor', time:'2023/09' } },
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.50445, 42.768278] },
     properties:{ title:'Gungun — Meijer (1350 W Lake Lansing Rd)', description:'Meijer – Lake Lansing (maps.msu.edu)', time:'2023/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.483208, 42.730869] },
-    properties:{ title:'Kiera — Main Library (366 W Circle Dr)', description:'Main Library (LatLong)', time:'2024/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.52633, 42.73479] },
-    properties:{ title:'Ritesh — Staples (3003 E Michigan Ave)', description:'Staples (stores.staples.com)', time:'2023/09' } },
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.482842, 42.702165] },
     properties:{ title:'Gungun — Sansu (4750 S Hagadorn Rd)', description:'Sansu (Yelp)', time:'2023/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.49543, 42.73149] },
-    properties:{ title:'Kiera — Brody Square', description:'Brody Square (Mapcarta)', time:'2024/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.551557, 42.734973] },
-    properties:{ title:'Ritesh — Summit Comics & Games (216 S Washington Sq)', description:'Summit Comics & Games (downtownlansing.org)', time:'2023/09' } },
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.48253, 42.73586] },
     properties:{ title:'Gungun — Jolly Pumpkin (218 Albert Ave)', description:'Jolly Pumpkin (MapQuest)', time:'2023/09' } },
-  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.47928, 42.72708] },
-    properties:{ title:'Kiera — Erickson Hall', description:'Erickson Hall (Mapcarta)', time:'2024/09' } },
+
+  // Ritesh — 2023
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.48194, 42.72778] },
+    properties:{ title:'Ritesh — Wells Hall', description:'Wells Hall (source: LatLong)', time:'2023/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.52883, 42.73587] },
+    properties:{ title:'Ritesh — Olga’s Kitchen (Frandor, 354 Frandor Ave)', description:'Olga’s Kitchen – Frandor', time:'2023/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.52633, 42.73479] },
+    properties:{ title:'Ritesh — Staples (3003 E Michigan Ave)', description:'Staples (stores.staples.com)', time:'2023/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.551557, 42.734973] },
+    properties:{ title:'Ritesh — Summit Comics & Games (216 S Washington Sq)', description:'Summit Comics & Games (downtownlansing.org)', time:'2023/09' } },
   { type:'Feature', geometry:{ type:'Point', coordinates:[-84.47899, 42.72529] },
-    properties:{ title:'Ritesh — MSU Tech Store (Computer Center, 450 Auditorium Rd)', description:'MSU Tech Store (maps.msu.edu)', time:'2023/09' } }
+    properties:{ title:'Ritesh — MSU Tech Store (Computer Center, 450 Auditorium Rd)', description:'MSU Tech Store (maps.msu.edu)', time:'2023/09' } },
+
+  // Kiera — 2024
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.487943, 42.728184] },
+    properties:{ title:'Kiera — IM West', description:'IM West (spartancash.msu.edu)', time:'2024/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.479515, 42.725117] },
+    properties:{ title:'Kiera — MSU Dairy Store (Anthony Hall, 474 S Shaw Ln)', description:'MSU Dairy Store (whereorg.com)', time:'2024/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.483208, 42.730869] },
+    properties:{ title:'Kiera — Main Library (366 W Circle Dr)', description:'Main Library (LatLong)', time:'2024/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.49543, 42.73149] },
+    properties:{ title:'Kiera — Brody Square', description:'Brody Square (Mapcarta)', time:'2024/09' } },
+  { type:'Feature', geometry:{ type:'Point', coordinates:[-84.47928, 42.72708] },
+    properties:{ title:'Kiera — Erickson Hall', description:'Erickson Hall (Mapcarta)', time:'2024/09' } }
 ];
+
 
 // 3) Popup templating — includes name, description, image, authoritative link.
 // Popups open only on click (autoClose true; we never call openPopup on load).
@@ -207,13 +165,59 @@ var SliderCtl = L.Control.extend({
       return;
     }
 
+    var cachedFeatureGroups = {};
+    var weightedPositions = [];
+    var positionMap = new Map();
+    
+    // Calculate weighted positions based on year distribution
+    var positions = 0;
+    labels.forEach(function(label, index) {
+      var year = parseInt(label.split(' ')[1]);
+      var weight = year === 2023 ? 2 : 1; // Give 2023 twice the weight
+      var markerCount = (buckets[label] || []).length;
+      
+      // Add more granular positions for periods with more markers
+      var positions = weight * Math.max(1, Math.ceil(markerCount / 2));
+      
+      for (var i = 0; i < positions; i++) {
+        weightedPositions.push(index);
+      }
+    });
+
+    // Pre-cache feature groups and create position mapping
+    labels.forEach(function(label, index) {
+      var markerList = buckets[label] || [];
+      cachedFeatureGroups[label] = L.featureGroup(markerList);
+    });
+
+    var RAF;
+    var lastUpdate = 0;
+    
     $ui.slider({
       min: 0,
-      max: labels.length - 1,
+      max: weightedPositions.length - 1,
       value: 0,
       step: 1,
-      slide: function (_, ui) { that._update(ui.value); },
-      change: function (_, ui) { that._update(ui.value); }
+      animate: false,
+      classes: {
+        "ui-slider": "ui-slider-fast"
+      },
+      slide: function (_, ui) {
+        var now = Date.now();
+        var labelIndex = weightedPositions[ui.value];
+        
+        // Always update the label text immediately
+        $('#slider-date').text(labels[labelIndex]);
+        
+        // Use RequestAnimationFrame for smooth updates
+        if (now - lastUpdate > 32) { // ~30fps cap
+          cancelAnimationFrame(RAF);
+          RAF = requestAnimationFrame(function() {
+            that._update(labelIndex);
+            lastUpdate = now;
+          });
+        }
+      }
     });
 
     // initial render
@@ -223,20 +227,28 @@ var SliderCtl = L.Control.extend({
     var label = labels[idx];
     if (!label) return;
 
-    // Update label
-    $('#slider-date').text(label);
+    // Use the cached feature group
+    var newFeatureGroup = cachedFeatureGroups[label];
+    
+    // Skip if same period
+    if (this._currentLabel === label) return;
+    this._currentLabel = label;
+    
+    // Efficiently swap visible markers
+    if (this._currentFeatureGroup) {
+      map.removeLayer(this._currentFeatureGroup);
+    }
+    
+    newFeatureGroup.addTo(map);
+    this._currentFeatureGroup = newFeatureGroup;
 
-    // Hide all visible markers
-    group1.eachLayer(function (l) { if (map.hasLayer(l)) map.removeLayer(l); });
-
-    // Show chosen period markers
-    var list = buckets[label] || [];
-    list.forEach(function (l) { l.addTo(map); });
-
-    // Fit bounds to visible markers for this period
-    var fg = L.featureGroup(list);
-    if (fg.getBounds && fg.getBounds().isValid()) {
-      map.fitBounds(fg.getBounds().pad(0.15));
+    // Fit bounds only when settling on a new period
+    if (newFeatureGroup.getBounds().isValid()) {
+      map.fitBounds(newFeatureGroup.getBounds().pad(0.15), {
+        animate: false,
+        duration: 0,
+        maxZoom: 15 // Prevent over-zooming
+      });
     }
   }
 });
@@ -255,5 +267,3 @@ if (typeof jQuery === 'undefined') {
   console.error('jQuery UI is not loaded (required for the slider).');
 }
 console.log('Slider labels:', labels);
-  }); // end DOMContentLoaded
-})(); // end IIFE
