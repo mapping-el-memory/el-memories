@@ -63,7 +63,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.47389, 42.72917] },
     properties: {
       title: 'Gungun — Baker Hall',
-      description: 'Baker Hall was where it all began, the first time I met my cohort and the professors in the Department of Anthropology. We introduced ourselves and shared our research interests—realizing how our diverse experiences connected us in unexpected ways.',
+      description: 'Baker Hall was where it all began, the first time I met my cohort and the professors in the department of Anthropology. We introduced ourselves and shared our research interests, realizing how our diverse experiences connected us in unexpected ways. That day marked the beginning of both intellectual curiosity and friendships that would shape my journey in East Lansing.',
       time: '2023/09',
       img: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/MSU_Baker_Hall.jpg?20060113185803',
       link: 'https://virtualtour.msu.edu/tour/social-cultural-studies/baker-hall/',
@@ -85,7 +85,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.50445, 42.768278] },
     properties: {
       title: 'Gungun — Meijer (1350 W Lake Lansing Rd)',
-      description: 'My first grocery trip to Meijer felt like an adventure—the store seemed endless. I bought more than I could carry and learned to shop smarter next time!',
+      description: 'My first grocery trip to Meijer was an adventure on its own. I was amazed by how huge the store was. I wandered around trying to find the basics and ended up buying way more than I could carry. The real lesson came at the bus stop, struggling with my bags and realizing that next time, I should probably shop like someone who doesn’t have superhuman strength.',
       time: '2023/09',
       img: 'https://s3-media0.fl.yelpcdn.com/bphoto/1g5swHCqk7GbaY7lBIKPSA/348s.jpg',
       link: 'https://www.meijer.com/shopping/store-locator/52.html',
@@ -96,7 +96,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.482842, 42.702165] },
     properties: {
       title: 'Gungun — Sansu (4750 S Hagadorn Rd)',
-      description: 'Sansu was where I tried sushi for the first time with the first friend I made in my cohort—lots of laughter over chopsticks and stories of home.',
+      description: 'Sansu was where I tried sushi for the first time, with the very first friend I made in my cohort. We spent the evening talking about home, laughing over how to use chopsticks, and realizing how much we had in common. That dinner marked the start of a friendship that quickly became one of my closest here in East Lansing.',
       time: '2023/09',
       img: 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxvE9PX7Rxo6bOQXHqJ4uJ3u57sWtuvbckSW8uTXrw4e2hj8XxUesVxPkC9RHCdU6MeVW8yftHzHGpuPUidPWtJ-SaITuXLnZJ7uPrOkUs6w_eTcSg0k3tqPErwba6gFk-bMtRllA=s1360-w1360-h1020-rw',
       link: 'https://sansu-sushi.com/',
@@ -107,7 +107,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.48253, 42.73586] },
     properties: {
       title: 'Gungun — Jolly Pumpkin (218 Albert Ave)',
-      description: 'I met my supervisors here during my first week in East Lansing. Over good food and easy conversation, I felt supported and excited for the journey ahead.',
+      description: 'Jolly Pumpkin was where I met my supervisors for the first time during my first week in East Lansing. They took me out for lunch, and over good food and easy conversation, we talked about my research interests and the places I should explore around campus. It was a welcoming start, the kind of meeting that made me feel supported and excited for the journey ahead.',
       time: '2023/09',
       img: 'https://www.lansingstatejournal.com/gcdn/presto/2023/05/26/PLSJ/ae41ee1e-2368-435d-9a6b-dc9612496ec2-230526_el_business_015a.JPG',
       link: 'https://www.jollypumpkin.com/',
@@ -120,7 +120,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.48194, 42.72778] },
     properties: {
       title: 'Ritesh — Wells Hall',
-      description: 'Wells Hall, home to English and the humanities, was the first building I visited on campus—nervous and thrilled to finally be at MSU.',
+      description: 'Wells Hall, home to the Department of English, was the first building I visited on campus. I remember standing outside, and feeling both nervous and thrilled to finally be at MSU. Potbelly- 2023 fall - My first meal in East Lansing was at Potbelly. A senior who picked me up from the airport took me there, and we shared sandwiches while I tried to take in everything around me. In that small café, I felt relieved that I wasn’t alone in this new country, and that kindness could make even the unfamiliar feel welcoming.',
       time: '2023/09',
       img: 'https://virtualtour.msu.edu/wp-content/uploads/2020/08/wells-hall-3-featured.jpg',
       link: 'https://virtualtour.msu.edu/tour/social-cultural-studies/wells-hall/',
@@ -131,7 +131,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.52883, 42.73587] },
     properties: {
       title: 'Ritesh — Olga’s Kitchen (Frandor, 354 Frandor Ave)',
-      description: 'One of the first restaurants I tried with my cohort and seniors—simple conversations that made the start of grad life feel exciting.',
+      description: 'Olga’s Kitchen was the first restaurant I went to in East Lansing, and I was excited to try something new with my cohort and senior students. We talked about where we had come from. It was one of those simple evenings that made the start of graduate life feel fun and full of possibility.',
       time: '2023/09',
       img: 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx4_EuCAJpCL-7ME5ouTVFPt_Sv55T2nP0z-oN8KsloMOOTmEuyZ2my4mkMBT1o3G2lGQDYek_5dicEdkniuC1gER21oaoF8ObVjjjS8GNEDqEAefUIM50Ww9PF-g8m9AOF4Yrb8Q=s1360-w1360-h1020-rw',
       link: 'https://en.wikipedia.org/wiki/Olga%27s_Kitchen',
@@ -142,7 +142,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.52633, 42.73479] },
     properties: {
       title: 'Ritesh — Staples (3003 E Michigan Ave)',
-      description: 'I first visited Staples in my first week. Browsing notebooks and pens became a small ritual that brightened tough days.',
+      description: 'I first went to Staples during my first week in East Lansing, after a not-so-great day. Wandering through the aisles of notebooks, pens, and colorful supplies instantly lifted my mood. Since then, it’s become my little happy place — whenever I feel low or homesick, I stop by, pick up some new stationery, and somehow everything feels a bit lighter again.',
       time: '2023/09',
       img: 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxeUJekaChwS29IXqrO6dmmpVnFeHpnIFff6VBuFibr08pxXgn-h5MsK8e78TfPzMlgxt0LnA2dbPgF2KOOdU27cD5dQ7h-1KrboMTo7OubUoSCrUMkXZXmt3yAaamqRFI53ao=w243-h203-n-k-no-nu',
       link: 'https://stores.staples.com/mi/lansing/3003-east-michigan-ave',
@@ -153,7 +153,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.551557, 42.734973] },
     properties: {
       title: 'Ritesh — Summit Comics & Games (216 S Washington Sq)',
-      description: 'As a comics fan, this was a priority in my first week. The shelves felt like a familiar world—art, stories, and community.',
+      description: 'As someone deeply interested in comics and popular culture, visiting Summit Comics & Games was a priority from my very first week in East Lansing. Walking through the shelves felt like stepping into a familiar world surrounded by art, stories, and community. It became one of the first places that truly reflected a part of who I am beyond academics.',
       time: '2023/09',
       img: 'https://www.lansingstatejournal.com/gcdn/presto/2020/11/20/PLSJ/bc2ee93d-2e84-4cea-83f1-aee3d5f9014a-201119_summit_comics_022a.JPG',
       link: 'https://www.summitlansing.com/',
@@ -164,7 +164,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.47899, 42.72529] },
     properties: {
       title: 'Ritesh — MSU Tech Store (Computer Center, 450 Auditorium Rd)',
-      description: 'I first visited to compare laptops and student discounts. Two years later, finally getting one felt like a small full-circle win.',
+      description: 'I first visited the MSU Tech Store out of curiosity, eager to check out the student discounts on laptops. I remember spending a long time comparing models and dreaming about owning one soon. It took almost two years, but when I finally got that laptop, it felt like coming full circle a small victory that marked how far I would come since those first days on campus',
       time: '2023/09',
       img: 'https://tech.msu.edu/wp-content/uploads/2015/06/banner-technology-services-2015.jpg',
       link: 'https://techstore.msu.edu/',
@@ -177,7 +177,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.487943, 42.728184] },
     properties: {
       title: 'Kiera — IM West',
-      description: 'On my first day of the fall semester, I went to IM West determined to start fresh. Senior students showed me around—what began as a quick visit turned into stories, laughter, and a sense of community.',
+      description: 'On my first day of the fall semester, I went to IM West determined to start fresh with a workout. Senior students showed me around, and what began as a casual visit turned into laughter and stories about surviving Michigan winters. That day reminded me how community often forms in the most unexpected moments.',
       time: '2024/09',
       img: 'https://ipf.msu.edu/sites/default/files/styles/full_width_1300px_/public/MSU%20Cam%20003.jpg?itok=f4HHdvqr',
       link: 'https://recsports.msu.edu/facilities/im-west',
@@ -188,7 +188,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.479515, 42.725117] },
     properties: {
       title: 'Kiera — MSU Dairy Store (Anthony Hall, 474 S Shaw Ln)',
-      description: 'A favorite early memory: visiting the MSU Dairy Store with a new friend. Big cones, long conversations—East Lansing started to feel like home.',
+      description: 'One of my favorite memories from my early days in East Lansing is visiting the MSU Dairy Store with a new friend from my cohort. We sat outside with big cones of ice cream and talked for hours about adjusting to life here. It was a simple, happy afternoon that made East Lansing start to feel a little more like home.',
       time: '2024/09',
       img: 'https://spartanyouth.msu.edu/media/vsbnmwaj/msu-dairy-store.jpg',
       link: 'https://msudairystore.com/',
@@ -199,7 +199,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.483208, 42.730869] },
     properties: {
       title: 'Kiera — Main Library (366 W Circle Dr)',
-      description: 'During an OISS scavenger hunt, I explored the library’s corners, got a little lost, found new study spots, and met friends.',
+      description: 'The Main Library became special to me after the scavenger hunt organized by OISS. That afternoon, I joined other international students as we ran around the building searching for clues, laughing, and getting a little lost together. It was a fun way to explore the library’s endless corners and by the end of the day, I had found not only new study spots but also a few new friends.',
       time: '2024/09',
       img: 'https://lib.msu.edu/sites/default/files/news-article/msu-libraries-and-taylor-francis-announce-new-open-access-partnership-news-article/Michigan-State-University-Library-scaled.jpg',
       link: 'https://virtualtour.msu.edu/tour/campus-highlights-tour/msu-library/',
@@ -210,7 +210,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.49543, 42.73149] },
     properties: {
       title: 'Kiera — Brody Square',
-      description: 'Brody Square was the first dining hall I tried and quickly a favorite. The pizza really did live up to the hype!',
+      description: 'Brody Square was the first dining hall I tried, and it instantly became a favorite. I still remember that first slice of pizza it really did live up to its reputation after hearing it had won the best campus dining award.',
       time: '2024/09',
       img: 'https://liveon.msu.edu/sites/default/files/2018-03/Brody-Neigh.png',
       link: 'https://eatatstate.msu.edu/menu/Brody%20Square',
@@ -221,7 +221,7 @@ var dataset1 = [
     type: 'Feature', geometry: { type: 'Point', coordinates: [-84.47928, 42.72708] },
     properties: {
       title: 'Kiera — Erickson Hall',
-      description: 'Erickson Hall was the first building I stepped into at MSU. Waiting in the lobby, I recognized names from emails—this was the start of our cohort.',
+      description: 'Erickson Hall was the first building I set foot in at MSU the start of everything. I remember waiting in the lobby, spotting a few familiar names from emails, and realizing these were the people who would become my cohort. There was a quiet excitement in that first meeting.',
       time: '2024/09',
       img: 'https://create4stem.msu.edu/sites/default/files/2024-08/erickson.jpg',
       link: 'https://virtualtour.msu.edu/tour/education-public-services/erickson-hall/',
