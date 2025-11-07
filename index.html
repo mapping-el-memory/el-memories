@@ -204,7 +204,7 @@
           _update: function(i){
             var e = entries[i];
             if (!e) return;
-            if (this.current) { try { this._current.layer.remove(); } catch(){} }
+            if (this.current) { try { this._current.layer.remove(); } catch (e) { } }
             e.layer.addTo(this._map);
             // do NOT auto-open popup; user clicks marker
             $('#slider-date').text(e.time.getFullYear());
