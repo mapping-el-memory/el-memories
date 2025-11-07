@@ -10,9 +10,9 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // --- custom image markers that scale with zoom ---
 const OWNER_IMAGE = {
-  'Gungun': 'images/gungunMarker.png',
-  'Kiera' : 'images/kieraMarker.png',
-  'Ritesh': 'images/riteshMarker.png'
+  'Gungun': 'images/GungunMarker.png',
+  'Kiera' : 'images/KieraMarker.png',
+  'Ritesh': 'images/RiteshMarker.png'
 };
 
 // pick a marker image by owner (from "Owner — Place")
