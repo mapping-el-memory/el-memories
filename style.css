@@ -2,7 +2,8 @@
    - body uses column flex so main content can grow and push footer down
    - keeps behavior friendly for pages that include a <main> element (about.html)
 */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     display: flex;
@@ -34,7 +35,8 @@ html, body {
 
 /* About page hero (full-width banner showing full image) */
 .about-hero {
-    width: 100vw; /* stretch to viewport edges */
+    width: 100vw;
+    /* stretch to viewport edges */
     position: relative;
     left: 50%;
     right: 50%;
@@ -47,7 +49,8 @@ html, body {
 .about-hero-img {
     display: block;
     width: 100%;
-    height: auto; /* preserve aspect ratio and show full image */
+    height: auto;
+    /* preserve aspect ratio and show full image */
     object-fit: contain;
 }
 
@@ -73,49 +76,148 @@ footer {
 
 /* Full-width hero section */
 .about-hero {
-  position: relative;
-  width: 100%;
-  height: 60vh; /* adjust as needed */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    /* adjust as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 /* Background image (from .bg-about) */
 .bg-about {
-  background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1716477469/clients/lansing/MSU_brady_mcdonough_Instagram_2736_ig_18068692432395619_7a17ba53-79a8-4030-adcd-7922c61d4922.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+    background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1716477469/clients/lansing/MSU_brady_mcdonough_Instagram_2736_ig_18068692432395619_7a17ba53-79a8-4030-adcd-7922c61d4922.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 /* Overlay for dark tint */
 .about-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* semi-transparent overlay */
-  z-index: 1;
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* semi-transparent overlay */
+    z-index: 1;
 }
 
 /* Image inside hero (centered, responsive) */
 .about-hero-img {
-  position: relative;
-  z-index: 2;
-  max-width: 80%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    position: relative;
+    z-index: 2;
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
 /* Make it full height on larger screens */
 @media (min-width: 992px) {
-  .about-hero {
-    height: 80vh;
-  }
+    .about-hero {
+        height: 80vh;
+    }
+}
+
+/* --- popup styling --- */
+.leaflet-popup-content-wrapper.custom-popup,
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 14px;
+    border: 2px solid #18453B;
+    /* MSU deep green border */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    background-color: #fffefb;
+    /* soft warm white */
+    padding: 0;
+}
+
+.leaflet-popup-content.custom-popup,
+.custom-popup .leaflet-popup-content {
+    margin: 0;
+    padding: 10px 14px 12px;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* Popup image sizing */
+.leaflet-popup-content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;         /* limits tall photos */
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.leaflet-popup-content {
+  padding: 10px 12px;
+  overflow: hidden;
+}
+
+
+/* title: deep green, bold */
+.popup-title {
+    color: #18453B;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+/* description text */
+.popup-desc {
+    color: #444;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* image styling */
+.popup-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 8px;
+}
+
+/* link styling */
+.popup-link a {
+    color: #1E8449;
+    /* fresh green accent */
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dashed rgba(30, 132, 73, 0.4);
+    transition: all 0.2s ease;
+}
+
+.popup-link a:hover {
+    color: #145A32;
+    border-bottom-color: transparent;
+    text-shadow: 0 0 3px rgba(30, 132, 73, 0.3);
+}
+
+/* optional cute “pop” animation when popup opens */
+.leaflet-popup.custom-popup {
+    animation: popupFade 0.25s ease-out;
+}
+
+@keyframes popupFade {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 
@@ -134,7 +236,8 @@ footer {
 .leaflet-control.sliderctl {
     /* raise the control 110px from bottom; use !important to override Leaflet defaults */
     bottom: 110px !important;
-    left: 12px; /* small left inset for visual spacing */
+    left: 12px;
+    /* small left inset for visual spacing */
 }
 
 .sliderctl .label {
@@ -150,14 +253,20 @@ footer {
 }
 
 .sliderctl .ui-slider {
-        width: 340px; /* increased width so the slider is more visible */
+    width: 340px;
+    /* increased width so the slider is more visible */
     margin-top: 6px;
 }
 
 /* Responsive: make slider narrower on small screens */
 @media (max-width: 520px) {
-    .sliderctl .ui-slider { width: 220px; }
-    .leaflet-control.sliderctl { bottom: 90px !important; }
+    .sliderctl .ui-slider {
+        width: 220px;
+    }
+
+    .leaflet-control.sliderctl {
+        bottom: 90px !important;
+    }
 }
 
 .leaflet-bottom.leaflet-left {
@@ -167,3 +276,44 @@ footer {
 /* lifts controls above footer */
 
 /* .bg-about removed in favor of the <img>-based hero (.about-hero) */
+
+/* --- green & white button styling --- */
+.explore-btn.btn-primary {
+  background-color: #18453B;     /* MSU deep green */
+  border-color: #18453B;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 22px;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+}
+
+.explore-btn.btn-primary:hover,
+.explore-btn.btn-primary:focus {
+  background-color: #ffffff;
+  color: #18453B;
+  border-color: #18453B;
+  box-shadow: 0 4px 10px rgba(24,69,59,0.4);
+  transform: translateY(-2px);
+}
+
+.explore-btn.btn-primary:active {
+  background-color: #145A32;   /* darker pressed green */
+  border-color: #145A32;
+  color: #fff;
+  transform: translateY(0);
+}
+
+/* optional subtle pulse animation when modal first opens */
+@keyframes pulse-once {
+  0% { box-shadow: 0 0 0 0 rgba(24,69,59,0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(24,69,59,0); }
+  100% { box-shadow: 0 0 0 0 rgba(24,69,59,0); }
+}
+
+#exploreMapBtn {
+  animation: pulse-once 1.5s ease-out 0.4s;
+}
+/* --- end button styling --- */
