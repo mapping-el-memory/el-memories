@@ -158,26 +158,42 @@ var SliderCtl = L.Control.extend({
     // initial render
     this._update(0);
   },
-  _update: function (idx) {
-    var y = years[idx];
-    if (!y) return;
+  // cumulative display: show all markers up to and including the selected year
+_update: function (idx) {
+  var that = this;
 
-    // Update label
-    $('#slider-date').text(y);
+  // guard
+  if (!years.length || idx < 0 || idx >= years.length) return;
 
-    // Swap visible markers: remove previous FG, add the chosen year's FG
-    if (this._currentFG) this._map.removeLayer(this._currentFG);
-    var fg = this._fgCache[y];
+  var selectedYear = years[idx];
+  $('#slider-date').text(selectedYear);
+
+  // remove any FeatureGroup currently on the map
+  if (this._visibleFGs && this._visibleFGs.length) {
+    this._visibleFGs.forEach(function(fg){ that._map.removeLayer(fg); });
+  }
+  this._visibleFGs = [];
+
+  // add all years up to selected index (cumulative)
+  for (var i = 0; i <= idx; i++) {
+    var y = years[i];
+    var fg = this._fgCache && this._fgCache[y];
     if (fg) {
       fg.addTo(this._map);
-      this._currentFG = fg;
-
-      // Fit bounds to year markers (if any)
-      if (fg.getBounds && fg.getBounds().isValid()) {
-        this._map.fitBounds(fg.getBounds().pad(0.15));
-      }
+      this._visibleFGs.push(fg);
     }
   }
+
+  // fit bounds to everything currently visible
+  if (this._visibleFGs.length) {
+    var combined = L.featureGroup(this._visibleFGs);
+    var b = combined.getBounds && combined.getBounds();
+    if (b && b.isValid && b.isValid()) {
+      this._map.fitBounds(b.pad(0.15));
+    }
+  }
+}
+
 });
 
 var sliderControl1 = new SliderCtl();
